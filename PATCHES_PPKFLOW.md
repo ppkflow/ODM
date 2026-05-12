@@ -46,6 +46,7 @@ pass PPKflow worker, benchmark, and accuracy gates before moving from
 ### PR #1994: SRT Parsing And GPS Altitude Handling
 
 - Upstream: https://github.com/OpenDroneMap/ODM/pull/1994
+- PPKflow status: ported to `ppkflow/staging` with static regression guards.
 - Risk: low-medium.
 - Expected files: SRT/GPS metadata parsing paths.
 - Why PPKflow cares: Some customer uploads include DJI sidecar/video-derived
@@ -59,6 +60,7 @@ pass PPKflow worker, benchmark, and accuracy gates before moving from
 ### PR #1971: Nested `image_groups.txt` Recursion
 
 - Upstream: https://github.com/OpenDroneMap/ODM/pull/1971
+- PPKflow status: ported to `ppkflow/staging` with static regression guards.
 - Risk: low.
 - Expected files: image grouping / project layout handling.
 - Why PPKflow cares: PPKflow stages image packages before remote execution.
