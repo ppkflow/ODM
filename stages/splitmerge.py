@@ -31,6 +31,9 @@ class ODMSplitStage(types.ODM_Stage):
 
         if io.file_exists(image_groups_file):
             outputs['large'] = True
+            if args.split < 999999:
+                args.split = 999999
+                log.ODM_WARNING('image_groups.txt and split both set. Using groups in image_groups.txt.')
         elif len(photos) > args.split:
             # check for availability of geotagged photos
             if reconstruction.has_geotagged_photos():

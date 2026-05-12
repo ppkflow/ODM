@@ -70,6 +70,51 @@ pass PPKflow worker, benchmark, and accuracy gates before moving from
   - 20-photo smoke benchmark.
   - No change in deliverables for normal flat image package.
 
+### PR #1980: Multi-Channel TIFF Image Loading
+
+- Upstream: https://github.com/OpenDroneMap/ODM/pull/1980
+- Related issue: https://github.com/OpenDroneMap/ODM/issues/1979
+- PPKflow status: ported to `ppkflow/staging` with static regression guards.
+- Risk: low-medium.
+- Expected files: image-size and AI image-loading helpers.
+- Why PPKflow cares: future multispectral and stacked TIFF inputs should not be
+  rejected by helper paths that assume RGB/RGBA-only images.
+- Required checks:
+  - Multichannel TIFF fixture once a multispectral fixture is added.
+  - RGB JPEG/standard DJI smoke job still works.
+  - No change in orthophoto products for standard RGB photogrammetry.
+
+### PR #1948: Camera Serial Number In Camera Identity
+
+- Upstream: https://github.com/OpenDroneMap/ODM/pull/1948
+- PPKflow status: ported to `ppkflow/staging` with static regression guards.
+- Risk: medium.
+- Expected files: `opendm/photo.py`.
+- Why PPKflow cares: DJI/RTK and multi-camera datasets can contain images with
+  the same make/model/focal metadata but different physical sensors. Including
+  serial number in camera identity prevents accidental camera-model merging.
+- Required checks:
+  - DJI single-camera benchmark should keep one camera group.
+  - Dual-camera or multispectral fixture should split physical sensors
+    correctly.
+  - CRS, bounds, GSD, and registered image counts compared with production.
+
+### PR #1887: Respect `image_groups.txt` Over Split Threshold
+
+- Upstream: https://github.com/OpenDroneMap/ODM/pull/1887
+- Related issue: https://github.com/OpenDroneMap/ODM/issues/1853
+- PPKflow status: partially ported to `ppkflow/staging` with static regression
+  guards; only the `image_groups.txt` split-threshold override was taken.
+- Risk: low.
+- Expected files: `stages/splitmerge.py`.
+- Why PPKflow cares: remote worker packages may include explicit image groups.
+  ODM should use those groups instead of recursively applying the normal split
+  threshold.
+- Required checks:
+  - Fixture with `image_groups.txt` and `--split` set.
+  - 20-photo smoke benchmark.
+  - No change in normal no-groups projects.
+
 ### PR #1974: DJI Gimbal Yaw / OPK Orientation Handling
 
 - Upstream: https://github.com/OpenDroneMap/ODM/pull/1974
