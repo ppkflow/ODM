@@ -17,6 +17,7 @@ pass PPKflow worker, benchmark, and accuracy gates before moving from
 ### PR #2021: ExifRead DJI MakerNote Empty-Value Guard
 
 - Upstream: https://github.com/OpenDroneMap/ODM/pull/2021
+- PPKflow status: ported to `ppkflow/staging` with local regression coverage.
 - Risk: low.
 - Expected files: `opendm/photo.py`.
 - Why PPKflow cares: DJI image metadata parsing failures can abort worker jobs
@@ -30,6 +31,7 @@ pass PPKflow worker, benchmark, and accuracy gates before moving from
 ### PR #2003: GPU/Kubernetes CUDA Path Fix
 
 - Upstream: https://github.com/OpenDroneMap/ODM/pull/2003
+- PPKflow status: ported to `ppkflow/staging` with Dockerfile regression coverage.
 - Risk: low for GPU images; no expected CPU behavior change.
 - Expected files: `gpu.Dockerfile`.
 - Why PPKflow cares: Akash GPU providers expose CUDA/NVIDIA binaries through

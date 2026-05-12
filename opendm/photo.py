@@ -9,6 +9,7 @@ from six import string_types
 from datetime import datetime, timedelta, timezone
 
 from opendm import log
+from opendm.exifread_compat import patch_exifread_empty_values
 from opendm.rollingshutter import get_rolling_shutter_readout
 import xmltodict as x2d
 from opendm import get_image_size
@@ -17,6 +18,8 @@ from opensfm.sensors import sensor_data
 from opensfm.geo import ecef_from_lla
 
 projections = ['perspective', 'fisheye', 'fisheye_opencv', 'brown', 'dual', 'equirectangular', 'spherical']
+
+patch_exifread_empty_values()
 
 def find_mean_utc_time(photos):
     utc_times = []
