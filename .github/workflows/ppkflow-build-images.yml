@@ -1,0 +1,98 @@
+name: Build PPKflow ODM Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Immutable PPKflow image tag"
+        required: true
+        default: "3.6.0-ppkflow.1"
+      build_jobs:
+        description: "Parallel native build jobs passed to configure.sh"
+        required: true
+        default: "4"
+      build_cpu:
+        description: "Build ghcr.io/ppkflow/odm"
+        required: true
+        type: boolean
+        default: true
+      build_gpu:
+        description: "Build ghcr.io/ppkflow/odm-gpu"
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-cpu:
+    if: ${{ inputs.build_cpu }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push CPU ODM image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          no-cache: true
+          build-args: |
+            ODM_BUILD_JOBS=${{ inputs.build_jobs }}
+          tags: |
+            ghcr.io/ppkflow/odm:${{ inputs.tag }}
+
+      - name: Print CPU image digest
+        run: echo "ghcr.io/ppkflow/odm@${{ steps.build.outputs.digest }}"
+
+  build-gpu:
+    if: ${{ inputs.build_gpu }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push GPU ODM image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./gpu.Dockerfile
+          platforms: linux/amd64
+          push: true
+          no-cache: true
+          build-args: |
+            ODM_BUILD_JOBS=${{ inputs.build_jobs }}
+          tags: |
+            ghcr.io/ppkflow/odm-gpu:${{ inputs.tag }}
+
+      - name: Print GPU image digest
+        run: echo "ghcr.io/ppkflow/odm-gpu@${{ steps.build.outputs.digest }}"
