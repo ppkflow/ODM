@@ -1,5 +1,7 @@
 FROM nvidia/cuda:12.9.1-devel-ubuntu24.04 AS builder
 
+ARG ODM_BUILD_JOBS=4
+
 # Env variables
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONPATH="$PYTHONPATH:/code/SuperBuild/install/local/lib/python3.12/dist-packages:/code/SuperBuild/install/lib/python3.12/dist-packages:/code/SuperBuild/install/bin/opensfm" \
@@ -11,8 +13,9 @@ WORKDIR /code
 # Copy everything
 COPY . ./
 
-# Run the build
-RUN PORTABLE_INSTALL=YES GPU_INSTALL=YES bash configure.sh install
+# Run the build. Keep the job count explicit so multi-platform buildx
+# builders don't inherit an unrealistic emulated CPU count.
+RUN PORTABLE_INSTALL=YES GPU_INSTALL=YES bash configure.sh install "${ODM_BUILD_JOBS}"
 
 # Run the tests
 ENV PATH="/code/venv/bin:$PATH"

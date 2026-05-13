@@ -83,6 +83,11 @@ ExternalProject_Add(${_proj_name}
     -DBUILD_opencv_ts=OFF
     -DBUILD_opencv_xfeatures2d=ON
     -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t
+    # Buildx linux/amd64 builds can run OpenCV's CPU feature probes under
+    # emulation. Keep the production image portable by excluding FP16/F16C
+    # dispatch, which is fragile in that environment, while preserving the
+    # common x86 dispatch paths used by ODM/OpenSfM.
+    -DCPU_DISPATCH=SSE4_1,SSE4_2,AVX,AVX2
     -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
     -DCMAKE_INSTALL_PREFIX:PATH=${SB_INSTALL_DIR}
     ${WIN32_CMAKE_ARGS}
