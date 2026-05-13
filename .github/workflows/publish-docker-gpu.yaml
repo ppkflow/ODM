@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'OpenDroneMap/ODM'
     runs-on: ubuntu-latest
     timeout-minutes: 2880
     steps:
