@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   build:
+    if: github.repository == 'OpenDroneMap/ODM'
     runs-on: windows-2022
     environment: azuresigning
     steps:
@@ -72,4 +73,3 @@ jobs:
         file_glob: true
         tag: ${{ github.ref }}
         overwrite: true
-
