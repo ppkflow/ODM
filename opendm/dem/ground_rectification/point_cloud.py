@@ -22,8 +22,13 @@ class PointCloud:
     @staticmethod
     def with_xy(xy):
         [x, y] = np.hsplit(xy, 2)
-        empty = np.empty(xy.shape[0])
-        return PointCloud.with_dimensions(x.ravel(), y.ravel(), empty, np.empty(xy.shape[0], dtype=np.uint8), empty, empty, empty)
+        count = xy.shape[0]
+        z = np.full(count, np.nan)
+        classification = np.zeros(count, dtype=np.uint8)
+        red = np.zeros(count, dtype=np.uint8)
+        green = np.zeros(count, dtype=np.uint8)
+        blue = np.zeros(count, dtype=np.uint8)
+        return PointCloud.with_dimensions(x.ravel(), y.ravel(), z, classification, red, green, blue)
 
     def __getitem__(self, mask):
         masked_dimensions = { name: values[mask] for name, values in self.extra_dimensions.items() }
@@ -96,6 +101,15 @@ class BoundingBox3D:
         max = np.array([self.x_max, self.y_max, self.z_max])
 
         arr = np.column_stack((point_cloud.get_xy(), point_cloud.get_z()))
+        mask = np.all(np.logical_and(min <= arr, arr <= max), axis=1)
+
+        return point_cloud[mask]
+
+    def keep_points_inside_xy(self, point_cloud):
+        min = np.array([self.x_min, self.y_min])
+        max = np.array([self.x_max, self.y_max])
+
+        arr = point_cloud.get_xy()
         mask = np.all(np.logical_and(min <= arr, arr <= max), axis=1)
 
         return point_cloud[mask]
